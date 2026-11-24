@@ -4,56 +4,120 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FARES</title>
+
 <style>
+* { box-sizing: border-box; }
+
 body {
-  background: #101522;
+  margin: 0;
+  background: #0b1120;
   color: white;
-  font-family: Arial;
-  text-align: center;
-  padding: 30px 15px;
+  font-family: Arial, sans-serif;
 }
+
+header {
+  background: #151f33;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  color: #35a5ff;
+  font-size: 27px;
+  font-weight: bold;
+}
+
 .card {
-  max-width: 380px;
-  margin: 60px auto;
+  background: #17243a;
+  max-width: 430px;
+  margin: 35px auto;
   padding: 25px;
-  background: #1d293b;
-  border-radius: 15px;
+  border-radius: 18px;
+  text-align: center;
 }
+
 input, button {
-  box-sizing: border-box;
   width: 100%;
-  padding: 13px;
-  margin: 9px 0;
-  border: 0;
-  border-radius: 8px;
+  padding: 14px;
+  margin-top: 12px;
+  border: none;
+  border-radius: 9px;
   font-size: 16px;
 }
+
+input {
+  background: #0b1120;
+  color: white;
+}
+
 button {
   background: #1687e8;
   color: white;
   font-weight: bold;
+  cursor: pointer;
 }
+
+button:hover {
+  background: #086bc0;
+}
+
 #message { color: #ffd166; }
+
 #account { display: none; }
+
+.welcome {
+  background: #213653;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+footer {
+  text-align: center;
+  color: #8290a5;
+  margin-top: 60px;
+  padding: 20px;
+}
 </style>
 </head>
+
 <body>
 
+<header>
+  <div class="logo">FARES</div>
+  <div>منصتك الخاصة</div>
+</header>
+
 <div class="card" id="loginCard">
-  <h1>FARES</h1>
-  <p>مرحبًا بك، سجل الدخول للمتابعة</p>
-  <input id="email" type="email" placeholder="البريد الإلكتروني">
-  <input id="password" type="password" placeholder="كلمة المرور">
+  <h2>مرحباً بك في FARES</h2>
+  <p>سجل الدخول إلى حسابك</p>
+
+  <input id="email" type="email"
+  placeholder="البريد الإلكتروني">
+
+  <input id="password" type="password"
+  placeholder="كلمة المرور">
+
   <button id="loginButton">تسجيل الدخول</button>
   <p id="message"></p>
 </div>
 
 <div class="card" id="account">
-  <h1>FARES</h1>
-  <h2 id="name"></h2>
-  <p id="welcome"></p>
+  <h2>مرحباً بك 👋</h2>
+
+  <div class="welcome">
+    <h2 id="name"></h2>
+    <p id="welcome"></p>
+  </div>
+
   <button id="logoutButton">تسجيل الخروج</button>
 </div>
+
+<footer>
+  FARES © 2026
+</footer>
 
 <script type="module">
 import { createClient } from
@@ -80,6 +144,7 @@ async function showAccount(user) {
 
   document.getElementById('loginCard').style.display = 'none';
   document.getElementById('account').style.display = 'block';
+
   document.getElementById('name').textContent = data.name;
   document.getElementById('welcome').textContent =
     data.welcome_message;
@@ -115,5 +180,8 @@ if (data.session) {
   await showAccount(data.session.user);
 }
 </script>
+
 </body>
 </html>
+0
+
