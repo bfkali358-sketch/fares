@@ -1,187 +1,448 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FARES</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FARES 💙</title>
 
-<style>
-* { box-sizing: border-box; }
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
-body {
-  margin: 0;
-  background: #0b1120;
-  color: white;
-  font-family: Arial, sans-serif;
-}
+  <style>
+    * { box-sizing: border-box; }
 
-header {
-  background: #151f33;
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    body {
+      margin: 0;
+      padding: 18px;
+      background: #081225;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
 
-.logo {
-  color: #35a5ff;
-  font-size: 27px;
-  font-weight: bold;
-}
+    .container {
+      max-width: 500px;
+      margin: 25px auto;
+      padding: 22px;
+      background: #14213b;
+      border-radius: 18px;
+    }
 
-.card {
-  background: #17243a;
-  max-width: 430px;
-  margin: 35px auto;
-  padding: 25px;
-  border-radius: 18px;
-  text-align: center;
-}
+    h1 {
+      text-align: center;
+      color: #55b7ff;
+    }
 
-input, button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 12px;
-  border: none;
-  border-radius: 9px;
-  font-size: 16px;
-}
+    input, select, button {
+      width: 100%;
+      padding: 14px;
+      margin: 9px 0;
+      border: 0;
+      border-radius: 9px;
+      font-size: 16px;
+    }
 
-input {
-  background: #0b1120;
-  color: white;
-}
+    input, select {
+      background: #263754;
+      color: white;
+    }
 
-button {
-  background: #1687e8;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
+    button {
+      background: #1685e5;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-button:hover {
-  background: #086bc0;
-}
+    button:disabled {
+      opacity: .5;
+    }
 
-#message { color: #ffd166; }
+    #account {
+      display: none;
+    }
 
-#account { display: none; }
+    #chatMessages {
+      height: 300px;
+      overflow-y: auto;
+      background: #091426;
+      padding: 12px;
+      border-radius: 10px;
+      margin: 12px 0;
+    }
 
-.welcome {
-  background: #213653;
-  padding: 20px;
-  border-radius: 12px;
-  margin-top: 20px;
-}
+    .message {
+      background: #263754;
+      padding: 10px;
+      border-radius: 10px;
+      margin: 8px 0;
+      overflow-wrap: anywhere;
+    }
 
-footer {
-  text-align: center;
-  color: #8290a5;
-  margin-top: 60px;
-  padding: 20px;
-}
-</style>
+    .mine {
+      background: #075b9c;
+    }
+
+    .status {
+      text-align: center;
+      color: #80caff;
+      overflow-wrap: anywhere;
+      min-height: 22px;
+    }
+
+    small {
+      color: #c3d5e8;
+    }
+
+    hr {
+      border: 1px solid #334663;
+      margin: 22px 0;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="container">
+    <h1>FARES 💙</h1>
 
-<header>
-  <div class="logo">FARES</div>
-  <div>منصتك الخاصة</div>
-</header>
+    <div id="loginCard">
+      <h2>تسجيل الدخول</h2>
 
-<div class="card" id="loginCard">
-  <h2>مرحباً بك في FARES</h2>
-  <p>سجل الدخول إلى حسابك</p>
+      <input id="email" type="email" placeholder="البريد الإلكتروني">
+      <input id="password" type="password" placeholder="كلمة المرور">
 
-  <input id="email" type="email"
-  placeholder="البريد الإلكتروني">
+      <button id="loginButton">دخول</button>
+      <p id="loginStatus" class="status"></p>
+    </div>
 
-  <input id="password" type="password"
-  placeholder="كلمة المرور">
+    <div id="account">
+      <h2>مرحباً <span id="name"></span></h2>
+      <p id="welcome" class="status"></p>
 
-  <button id="loginButton">تسجيل الدخول</button>
-  <p id="message"></p>
-</div>
+      <button id="logoutButton">تسجيل الخروج</button>
 
-<div class="card" id="account">
-  <h2>مرحباً بك 👋</h2>
+      <hr>
 
-  <div class="welcome">
-    <h2 id="name"></h2>
-    <p id="welcome"></p>
+      <h2>محادثات FARES 💬</h2>
+
+      <select id="users">
+        <option value="">اختر مستخدماً</option>
+      </select>
+
+      <div id="chatMessages">
+        <p class="status">اختر مستخدماً لبدء المحادثة</p>
+      </div>
+
+      <input id="chatInput" maxlength="1000" placeholder="اكتب رسالتك">
+
+      <button id="sendButton">إرسال الرسالة</button>
+      <button id="refreshButton">تحديث المحادثة</button>
+
+      <p id="status" class="status"></p>
+    </div>
   </div>
 
-  <button id="logoutButton">تسجيل الخروج</button>
-</div>
+  <script>
+    const SUPABASE_URL =
+      'https://efkmivrlmxeigaspsyvv.supabase.co';
 
-<footer>
-  FARES © 2026
-</footer>
+    const SUPABASE_KEY =
+      'sb_publishable_gxtkpfrl0a81ozdke2BLQQ_eT54Wn5e';
 
-<script type="module">
-import { createClient } from
-'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+    const el = id => document.getElementById(id);
 
-const supabase = createClient(
-  'https://efkmivrlmxeigaspsyvv.supabase.co',
-  'sb_publishable_gxtkpfrl0a81ozdke2BLQQ_eT54Wn5e'
-);
+    let supabaseClient = null;
+    let currentUser = null;
+    let currentName = '';
 
-const message = document.getElementById('message');
+    function loginMessage(message) {
+      el('loginStatus').textContent = message;
+    }
 
-async function showAccount(user) {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('name, welcome_message, is_developer')
-    .eq('id', user.id)
-    .single();
+    function chatMessage(message) {
+      el('status').textContent = message;
+    }
 
-  if (error || !data) {
-    message.textContent = 'لم يتم العثور على ملف الحساب';
-    return;
-  }
+    function showError(prefix, error) {
+      console.error(prefix, error);
+      return prefix + (error?.message || 'حدث خطأ غير معروف');
+    }
 
-  document.getElementById('loginCard').style.display = 'none';
-  document.getElementById('account').style.display = 'block';
+    async function showAccount(user) {
+      currentUser = user;
 
-  document.getElementById('name').textContent = data.name;
-  document.getElementById('welcome').textContent =
-    data.welcome_message;
-}
+      const { data, error } = await supabaseClient
+        .from('profiles')
+        .select('name, welcome_message')
+        .eq('id', user.id)
+        .single();
 
-document.getElementById('loginButton').onclick = async () => {
-  message.textContent = 'جارٍ تسجيل الدخول...';
+      if (error || !data) {
+        currentUser = null;
+        loginMessage(showError('تعذر تحميل الحساب: ', error));
+        return;
+      }
 
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
+      currentName = data.name;
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
+      el('loginCard').style.display = 'none';
+      el('account').style.display = 'block';
+      el('name').textContent = data.name;
+      el('welcome').textContent = data.welcome_message;
 
-  if (error) {
-    message.textContent = 'فشل تسجيل الدخول: تحقق من البيانات';
-    return;
-  }
+      await loadUsers();
+    }
 
-  await showAccount(data.user);
-};
+    async function loadUsers() {
+      if (!currentUser) return;
 
-document.getElementById('logoutButton').onclick = async () => {
-  await supabase.auth.signOut();
-  location.reload();
-};
+      chatMessage('جار تحميل المستخدمين...');
 
-const { data } = await supabase.auth.getSession();
+      const { data, error } = await supabaseClient
+        .from('profiles')
+        .select('id, name')
+        .neq('id', currentUser.id)
+        .order('name');
 
-if (data.session) {
-  await showAccount(data.session.user);
-}
-</script>
+      if (error) {
+        chatMessage(showError('خطأ تحميل المستخدمين: ', error));
+        return;
+      }
 
+      const select = el('users');
+      select.innerHTML = '';
+
+      const firstOption = document.createElement('option');
+      firstOption.value = '';
+      firstOption.textContent = 'اختر مستخدماً';
+      select.appendChild(firstOption);
+
+      data.forEach(user => {
+        const option = document.createElement('option');
+        option.value = user.id;
+        option.textContent = user.name;
+        select.appendChild(option);
+      });
+
+      chatMessage(
+        data.length ? 'تم تحميل المستخدمين' : 'لا يوجد مستخدمون آخرون'
+      );
+    }
+
+    async function loadMessages() {
+      if (!currentUser) return;
+
+      const receiver = el('users').value;
+
+      if (!receiver) {
+        el('chatMessages').textContent =
+          'اختر مستخدماً لبدء المحادثة';
+        return;
+      }
+
+      chatMessage('جار تحميل الرسائل...');
+
+      const sentRequest = supabaseClient
+        .from('messages')
+        .select('id, sender_id, content, created_at')
+        .eq('sender_id', currentUser.id)
+        .eq('receiver_id', receiver);
+
+      const receivedRequest = supabaseClient
+        .from('messages')
+        .select('id, sender_id, content, created_at')
+        .eq('sender_id', receiver)
+        .eq('receiver_id', currentUser.id);
+
+      const [sent, received] = await Promise.all([
+        sentRequest,
+        receivedRequest
+      ]);
+
+      if (sent.error || received.error) {
+        chatMessage(
+          showError('خطأ تحميل الرسائل: ', sent.error || received.error)
+        );
+        return;
+      }
+
+      const messages = [...sent.data, ...received.data];
+
+      messages.sort((a, b) =>
+        new Date(a.created_at) - new Date(b.created_at)
+      );
+
+      const area = el('chatMessages');
+      area.innerHTML = '';
+
+      if (messages.length === 0) {
+        area.textContent = 'لا توجد رسائل بعد';
+      }
+
+      messages.forEach(msg => {
+        const box = document.createElement('div');
+
+        box.className = 'message' +
+          (msg.sender_id === currentUser.id ? ' mine' : '');
+
+        const sender = document.createElement('strong');
+        sender.textContent =
+          msg.sender_id === currentUser.id ? 'أنت' : 'المستخدم الآخر';
+
+        const content = document.createElement('p');
+        content.textContent = msg.content;
+
+        const time = document.createElement('small');
+        time.textContent =
+          new Date(msg.created_at).toLocaleString('ar');
+
+        box.append(sender, content, time);
+        area.appendChild(box);
+      });
+
+      area.scrollTop = area.scrollHeight;
+      chatMessage('تم تحديث المحادثة');
+    }
+
+    async function login() {
+      const button = el('loginButton');
+
+      button.disabled = true;
+      loginMessage('جار تسجيل الدخول...');
+
+      try {
+        const email = el('email').value.trim();
+        const password = el('password').value;
+
+        if (!email || !password) {
+          loginMessage('أدخل البريد الإلكتروني وكلمة المرور');
+          return;
+        }
+
+        const { data, error } =
+          await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+          });
+
+        if (error) {
+          loginMessage(showError('فشل الدخول: ', error));
+          return;
+        }
+
+        await showAccount(data.user);
+
+      } catch (error) {
+        loginMessage(showError('حدث خطأ: ', error));
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    async function sendMessage() {
+      if (!currentUser) return;
+
+      const receiver = el('users').value;
+      const content = el('chatInput').value.trim();
+
+      if (!receiver) {
+        chatMessage('اختر مستخدماً أولاً');
+        return;
+      }
+
+      if (!content) {
+        chatMessage('اكتب رسالة أولاً');
+        return;
+      }
+
+      const button = el('sendButton');
+      button.disabled = true;
+      chatMessage('جار إرسال الرسالة...');
+
+      try {
+        const { error } = await supabaseClient
+          .from('messages')
+          .insert({
+            sender_id: currentUser.id,
+            receiver_id: receiver,
+            content: content
+          });
+
+        if (error) {
+          chatMessage(showError('فشل الإرسال: ', error));
+          return;
+        }
+
+        el('chatInput').value = '';
+        await loadMessages();
+        chatMessage('تم إرسال الرسالة بنجاح');
+
+      } catch (error) {
+        chatMessage(showError('حدث خطأ: ', error));
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    async function logout() {
+      const { error } = await supabaseClient.auth.signOut();
+
+      if (error) {
+        chatMessage(showError('تعذر تسجيل الخروج: ', error));
+        return;
+      }
+
+      currentUser = null;
+      currentName = '';
+
+      el('account').style.display = 'none';
+      el('loginCard').style.display = 'block';
+
+      el('email').value = '';
+      el('password').value = '';
+      el('users').innerHTML =
+        '<option value="">اختر مستخدماً</option>';
+      el('chatMessages').innerHTML = '';
+
+      loginMessage('تم تسجيل الخروج');
+    }
+
+    async function start() {
+      if (!window.supabase) {
+        loginMessage('تعذر تحميل مكتبة Supabase. تحقق من الإنترنت.');
+        return;
+      }
+
+      try {
+        supabaseClient = window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_KEY
+        );
+
+        const { data, error } =
+          await supabaseClient.auth.getSession();
+
+        if (error) {
+          loginMessage(showError('خطأ الجلسة: ', error));
+          return;
+        }
+
+        if (data.session) {
+0
+          await showAccount(data.session.user);
+        }
+
+      } catch (error) {
+        loginMessage(showError('خطأ تشغيل الموقع: ', error));
+      }
+    }
+
+    el('loginButton').addEventListener('click', login);
+    el('logoutButton').addEventListener('click', logout);
+    el('users').addEventListener('change', loadMessages);
+    el('sendButton').addEventListener('click', sendMessage);
+    el('refreshButton').addEventListener('click', loadMessages);
+
+    start();
+  </script>
 </body>
 </html>
-0
-
