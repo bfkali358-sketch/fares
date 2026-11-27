@@ -112,6 +112,17 @@
 
       <button id="loginButton">دخول</button>
       <p id="loginStatus" class="status"></p>
+      <button id="showSignupButton">إنشاء حساب جديد</button>
+    </div>
+
+    <div id="signupCard" style="display:none">
+      <h2>إنشاء حساب جديد</h2>
+      <input id="signupName" type="text" placeholder="اسم المستخدم">
+      <input id="signupEmail" type="email" placeholder="البريد الإلكتروني">
+      <input id="signupPassword" type="password" placeholder="كلمة المرور">
+      <button id="signupButton">إنشاء الحساب</button>
+      <button id="backToLoginButton">العودة إلى تسجيل الدخول</button>
+      <p id="signupStatus" class="status"></p>
     </div>
 
     <div id="account">
@@ -147,6 +158,8 @@
 
     const SUPABASE_KEY =
       'sb_publishable_gxtkpfrl0a81ozdke2BLQQ_eT54Wn5e';
+
+    const SITE_URL = 'https://bfkali358-sketch.github.io/fares/';
 
     const el = id => document.getElementById(id);
 
@@ -338,6 +351,67 @@
       }
     }
 
+
+    function showSignup() {
+      el('loginCard').style.display = 'none';
+      el('signupCard').style.display = 'block';
+    }
+
+    function showLogin() {
+      el('signupCard').style.display = 'none';
+      el('loginCard').style.display = 'block';
+    }
+
+    async function signup() {
+      const button = el('signupButton');
+      const name = el('signupName').value.trim();
+      const email = el('signupEmail').value.trim();
+      const password = el('signupPassword').value;
+
+      if (!name || !email || !password) {
+        el('signupStatus').textContent = 'املأ جميع الخانات';
+        return;
+      }
+
+      if (password.length < 6) {
+        el('signupStatus').textContent =
+          'كلمة المرور يجب أن تتكون من 6 أحرف على الأقل';
+        return;
+      }
+
+      button.disabled = true;
+      el('signupStatus').textContent = 'جار إنشاء الحساب...';
+
+      try {
+        const { data, error } = await supabaseClient.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { name },
+            emailRedirectTo: SITE_URL
+          }
+        });
+
+        if (error) {
+          el('signupStatus').textContent =
+            showError('تعذر إنشاء الحساب: ', error);
+          return;
+        }
+
+        if (data.session && data.user) {
+          await showAccount(data.user);
+        } else {
+          el('signupStatus').textContent =
+            'تم إنشاء الحساب. افتح بريدك الإلكتروني واضغط رابط التأكيد، ثم سجّل الدخول.';
+        }
+      } catch (error) {
+        el('signupStatus').textContent =
+          showError('حدث خطأ: ', error);
+      } finally {
+        button.disabled = false;
+      }
+    }
+
     async function sendMessage() {
       if (!currentUser) return;
 
@@ -437,6 +511,9 @@
     }
 
     el('loginButton').addEventListener('click', login);
+    el('showSignupButton').addEventListener('click', showSignup);
+    el('backToLoginButton').addEventListener('click', showLogin);
+    el('signupButton').addEventListener('click', signup);
     el('logoutButton').addEventListener('click', logout);
     el('users').addEventListener('change', loadMessages);
     el('sendButton').addEventListener('click', sendMessage);
